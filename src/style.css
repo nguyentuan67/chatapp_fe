@@ -21,7 +21,11 @@
 }
 
 :root {
-  --primary-color: #295fc2;
+  --primary-color: rgb(41, 95, 194);
+  --secondary-color: rgb(72, 166, 195);
+  --leftbar-color: #ffffff;
+  --text-color: rgb(97, 97, 97);
+  --text-color-active: rgb(0, 0, 0);
 }
 
 [data-theme='dark'] {

@@ -80,8 +80,6 @@
 </template>
 
 <script>
-import Signup from './Signup.vue';
-
 export default {
   name: "LoginPage",
   data() {

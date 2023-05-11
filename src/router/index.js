@@ -28,6 +28,15 @@ const routes = [
       layout: false,
     },
   },
+  {
+    path: "/chat",
+    name: "ChatPage",
+    component: () => import("../views/Chat.vue"),
+    meta: {
+      requiredAuth: true,
+      layout: true,
+    },
+  },
 ]
 
 const router = createRouter({
