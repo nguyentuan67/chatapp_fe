@@ -24,8 +24,10 @@
   --primary-color: rgb(41, 95, 194);
   --secondary-color: rgb(72, 166, 195);
   --leftbar-color: #ffffff;
-  --text-color: rgb(97, 97, 97);
-  --text-color-active: rgb(0, 0, 0);
+  --text-color: rgb(95, 95, 95);
+  --sub-text-color: rgb(120, 120, 120);
+  --text-color-active: rgb(19 19 19);
+  --background-component: rgb(235, 235, 235);
 }
 
 [data-theme='dark'] {
@@ -46,6 +48,12 @@ a {
 .v-field .v-field__prepend-inner .v-icon {
   font-size: 18px;
   margin-top: 4px;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @media (prefers-color-scheme: light) {

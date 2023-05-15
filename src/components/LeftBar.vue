@@ -4,7 +4,7 @@
       image="https://api.multiavatar.com/Starcrasher.png"
       color="grey-darken-1"
       :size="46"
-      class="mx-auto mt-5"
+      class="mx-auto mt-4"
       @click=""
     ></v-avatar>
   </router-link>
@@ -41,7 +41,7 @@ export default {
   data() {
     return {
       topItems: [
-        {title: "Chats", icon: "fal fa-comment", path: {name: "ChatPage"}},
+        {title: "Chats", icon: "far fa-comment", path: {name: "ChatPage"}},
         {title: "Friends", icon: "fal fa-user-friends", path: {name: "Home"}},
         {title: "Friends", icon: "fal fa-user-friends", path: {name: "Home"}},
         {title: "Friends", icon: "fal fa-user-friends", path: {name: "Home"}},
@@ -65,7 +65,7 @@ export default {
 .nav-item {
   position: relative;
   padding: 4px !important;
-  min-height: 69px !important;
+  min-height: 66px !important;
   text-align: center;
   color: var(--text-color) !important;
   transition: width ease-in 0.5s;
@@ -77,7 +77,7 @@ export default {
   right: -3px;
   height: 100%;
   width: 0px;
-  background-color: rgba(41, 95, 194, 0.06) !important;
+  background-color: rgba(41, 95, 194, 0.04) !important;
   border-left: 3px solid var(--primary-color);
   transition: width ease-out 0.5s;
   z-index: 1;
