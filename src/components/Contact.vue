@@ -33,11 +33,15 @@ export default {
   margin-left: 12px;
 }
 .wrapper {
-  padding: 14px 10px;
-  border-radius: 12px;
-  background-color: var(--background-component);
+  padding: 15px 10px;
+  border-radius: 18px;
+  margin-bottom: 6px;
+  background-color: transparent;
   display: flex;
   cursor: pointer;
+}
+.wrapper:hover, .wrapper.active {
+  background-color: var(--background-component);
 }
 .name {
   font-weight: 500;

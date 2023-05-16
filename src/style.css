@@ -26,8 +26,9 @@
   --leftbar-color: #ffffff;
   --text-color: rgb(95, 95, 95);
   --sub-text-color: rgb(120, 120, 120);
-  --text-color-active: rgb(19 19 19);
+  --text-color-active: rgb(19, 19, 19);
   --background-component: rgb(235, 235, 235);
+  --border-color: rgba(0, 0, 0, 0.12)
 }
 
 [data-theme='dark'] {

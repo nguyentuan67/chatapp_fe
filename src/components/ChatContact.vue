@@ -1,15 +1,12 @@
 <template>
-  <v-navigation-drawer
-    permanent
-    width="350"
-  >
-    <div class="px-3">
-      <Search />
-      <div class="list-contact">
-        <Contact />
-      </div>
+  <div class="px-2">
+    <div class="px-2"><Search /></div>
+    <div class="list-contact">
+      <Contact />
+      <Contact />
+      <Contact />
     </div>
-  </v-navigation-drawer>
+  </div>
 </template>
 
 <script>
