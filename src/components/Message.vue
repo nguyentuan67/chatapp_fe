@@ -4,9 +4,12 @@
     <div class="header">
       <div>
         <div class="name">Office Chat</div>
-        <div class="members">
+        <div class="info">
           67 members, 12 online
         </div>
+        <!-- <div class="info">
+          online
+        </div> -->
       </div>
       <div class="d-flex align-items-center">
         <v-btn
@@ -33,7 +36,9 @@
       </div>
     </div>
     <!-- Body message -->
-  
+    <div class="body flex-grow-1" style="padding: 0 12px;">
+
+    </div>
     <!-- Bottom message -->
     <div class="footer">
       <div class="d-flex align-items-center flex-grow-1">
@@ -90,14 +95,14 @@ export default {
   font-weight: 500;
   color: var(--text-color-active);
 }
-.header .members {
+.header .info {
   font-size: 14px;
   color: var(--text-color);
 }
 .header .icon {
   color: var(--text-color);
   font-size: 12px;
-  margin-left: 4px;
+  margin-left: 8px;
 }
 .header .icon:hover {
   color: var(--text-color-active);
