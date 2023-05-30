@@ -2,8 +2,8 @@ import axios from "axios";
 import router from "../router";
 
 let BASE_URL = import.meta.env.VITE_APP_ROOT_BE;
-let jwtToken = localStorage.getItem('userInfo') ? localStorage.getItem('userInfo').jwtToken : "";
-
+let userInfo = localStorage.getItem('userInfo') ? localStorage.getItem('userInfo') : null;
+let jwtToken = userInfo ? JSON.parse(userInfo).jwtToken : "";
 const instance = axios.create({
   baseURL: BASE_URL,
   headers: {

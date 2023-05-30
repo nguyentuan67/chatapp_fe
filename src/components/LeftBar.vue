@@ -41,7 +41,7 @@ export default {
   data() {
     return {
       topItems: [
-        {title: "Chats", icon: "far fa-comment", path: {name: "ChatPage"}},
+        {title: "Chats", icon: "far fa-comment", path: {name: "ChatDefault"}},
         {title: "Friends", icon: "fal fa-user-friends", path: {name: "Home"}},
         {title: "Friends", icon: "fal fa-user-friends", path: {name: "Home"}},
         {title: "Friends", icon: "fal fa-user-friends", path: {name: "Home"}},

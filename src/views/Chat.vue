@@ -6,22 +6,33 @@
     <ChatContact />
   </v-navigation-drawer>
   <v-main>
-    <Message />
+    <Conversation v-if="isChatDetail"/>
+    <div v-if="isChatDefault">
+      Default chat page
+    </div>
   </v-main>
 </template>
 
 <script>
 import ChatContact from '../components/ChatContact.vue';
-import Message from '../components/Message.vue';
+import Conversation from '../components/Conversation.vue';
 export default {
   name: "ChatPage",
   components: {
     ChatContact,
-    Message
+    Conversation
   },
   data() {
     return {
 
+    }
+  },
+  computed: {
+    isChatDefault() {
+      return this.$route.path.startsWith('/chat');
+    },
+    isChatDetail() {
+      return this.$route.path.startsWith('/chat/') && this.$route.params.username;
     }
   }
 }

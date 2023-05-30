@@ -3,12 +3,30 @@
     <div class="search-icon">
       <i class="fal fa-search"></i>
     </div>
-    <input type="text" placeholder="Search">
+    <input v-model="name" @input="debounceSearch" type="text" placeholder="Search">
   </div>
 </template>
 <script>
+import { authStore } from '../stores/authStore';
+import debounce from '../utils/debounce';
 export default {
-  name: "SearchComp"
+  name: "SearchComp",
+  data() {
+    return {
+      name: "",
+    }
+  },
+  methods: {
+    async searchUser() {
+      
+    },
+    debounceSearch: debounce(async function() {
+      if(this.name != "") {
+        const res = await authStore().searchUser(this.name);
+        console.log(res)
+      }
+    }, 500)
+  },
 }
 </script>
 <style scoped>
