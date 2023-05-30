@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { authStore } from "../stores/authStore";
 
 const routes = [
   {
@@ -42,6 +43,15 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+});
+
+router.beforeEach(async(to) => {
+  if (to.path == "/login" && authStore.authUser) {
+    router.push("/chat");
+  }
+  if (to.meta.requiredAuth && !authStore().authUser) {
+    router.push("/login");
+  }
 });
 
 export default router

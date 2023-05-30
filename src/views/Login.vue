@@ -67,7 +67,7 @@
             Forgot password
           </router-link>
         </div>
-        <v-btn variant="tonal" class="submit-btn mb-4">
+        <v-btn variant="tonal" class="submit-btn mb-4" @click="login">
           Login
         </v-btn>
         <div class="text-center">
@@ -80,6 +80,7 @@
 </template>
 
 <script>
+import { authStore } from "../stores/authStore"
 export default {
   name: "LoginPage",
   data() {
@@ -98,6 +99,9 @@ export default {
   methods: {
     change() {
       this.signup = true;
+    },
+    async login() {
+      const res = await authStore().login(this.username, this.password)
     }
   }
 }
