@@ -23,6 +23,7 @@
 :root {
   --primary-color: rgb(41, 95, 194);
   --secondary-color: rgb(72, 166, 195);
+  --black-white-color: rgb(255, 255, 255);
   --leftbar-color: #ffffff;
   --text-color: rgb(95, 95, 95);
   --sub-text-color: rgb(120, 120, 120);

@@ -30,6 +30,7 @@ const vuetify = createVuetify({
 });
 
 const pinia = createPinia();
+const BASE_URL = import.meta.env.VITE_APP_ROOT_BE
 
 createApp(App)
   .component("font-awesome-icon", FontAwesomeIcon)
