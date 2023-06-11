@@ -30,11 +30,14 @@ const vuetify = createVuetify({
 });
 
 const pinia = createPinia();
-const BASE_URL = import.meta.env.VITE_APP_ROOT_BE
 
-createApp(App)
+const app = createApp(App)
+
+app
   .component("font-awesome-icon", FontAwesomeIcon)
   .use(vuetify)
   .use(router)
   .use(pinia)
   .mount('#app')
+  
+export default app;

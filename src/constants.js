@@ -7,3 +7,5 @@ export const statusCode = {
   UNAUTHORIZED: 401,
   NOT_FOUND: 404
 }
+
+export const webSocketDev = "wss://localhost:8443/ws"

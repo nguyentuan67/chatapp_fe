@@ -48,7 +48,7 @@
           variant="text"
           icon="far fa-paperclip"
         ></v-btn>
-        <input class="input-msg" type="text" placeholder="Write a message">
+        <input class="input-msg" v-model="message" type="text" placeholder="Write a message">
         <v-btn
           class="icon micro"
           size="small"
@@ -59,6 +59,7 @@
           class="icon send"
           size="small"
           variant="text"
+          @click="sendMessage"
           icon="fal fa-paper-plane"
         ></v-btn>
       </div>
@@ -70,7 +71,12 @@
 export default {
   data() {
     return {
-
+      message: "",
+    }
+  },
+  methods: {
+    sendMessage() {
+      
     }
   }
 }
