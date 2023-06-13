@@ -3,13 +3,13 @@
   <div class="wrapper">
     <div class="header">
       <div>
-        <div class="name">Office Chat</div>
-        <div class="info">
-          67 members, 12 online
-        </div>
+        <div class="name">{{ convInfo.user.fullName }}</div>
         <!-- <div class="info">
-          online
+          67 members, 12 online
         </div> -->
+        <div class="info">
+          online
+        </div>
       </div>
       <div class="d-flex align-items-center">
         <v-btn
@@ -37,7 +37,12 @@
     </div>
     <!-- Body message -->
     <div class="body flex-grow-1" style="padding: 0 12px;">
-
+      <div v-if="isFirstChat">
+        <p>Bắt đầu cuộc trò chuyện nào</p>
+      </div>
+      <div v-else>
+        đã chat
+      </div>
     </div>
     <!-- Bottom message -->
     <div class="footer">
@@ -68,15 +73,48 @@
 </template>
 
 <script>
+import { reactive } from "vue";
+import { authStore } from "../stores/authStore";
+import { chatStore } from "../stores/chatStore";
 export default {
   data() {
     return {
       message: "",
+      convInfo: reactive({}),
+      isFirstChat: true
+    }
+  },
+  computed: {
+    userId() {
+      return this.$route.params.userId;
     }
   },
   methods: {
     sendMessage() {
       
+    },
+    async getInfoConversation() {
+      const res = await authStore().getUserById(this.userId);
+      if (res.output != null) {
+        this.convInfo.user = {...res.output};
+        const convRes = await chatStore().getConversation(res.output.id);
+        const convOutput = convRes.output
+        if(convOutput != null) {
+          this.isFirstChat = false;
+          this.convInfo.id = convOutput.id,
+          this.convInfo.type = convOutput.type
+        } else {
+          this.isFirstChat = true;
+        }
+      }
+    }
+  },
+  created() {
+    this.getInfoConversation();
+  },
+  watch: {
+    userId() {
+      this.getInfoConversation();
     }
   }
 }

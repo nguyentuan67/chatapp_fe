@@ -18,6 +18,14 @@ export const authStore = defineStore({
       })
       return res.data;
     },
+    async getUserById(userId) {
+      const res = await ApiService.get("/user", {
+        params: {
+          id: userId
+        }
+      })
+      return res.data;
+    },
 
     async login(username, password) {
       const res = await ApiService.post("/auth/login", {

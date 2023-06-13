@@ -24,7 +24,7 @@ instance.interceptors.request.use((config) => {
 });
 
 instance.interceptors.response.use((response) => {
-    if (response.data.status == 500) {
+    if (response.data.status == 500 || response.data.statusCode == 500) {
       router.push("/error/500");;
     }
     return response;

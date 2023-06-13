@@ -3,12 +3,13 @@
     <div class="search-icon">
       <i class="fal fa-search"></i>
     </div>
-    <input v-model="name" @input="debounceSearch" type="text" placeholder="Search">
-    <div v-if="name != ''" class="search-result">
+    <input v-model="name" @focus="this.showResult = true" @input="debounceSearch" type="text" placeholder="Search">
+    <div v-if="name != '' && showResult" class="search-result">
       <div v-if="searchUsers.length != 0" v-for="user in searchUsers" class="item-wrap">
         <router-link 
           class="d-flex align-items-center search-item"
-          :to="{name: 'ChatDetail', params: { username: user.username }}"
+          :to="{name: 'ChatDetail', params: { userId: user.id }}"
+          @click="this.showResult = false"
         >
           <v-avatar
             :image="user.avatarUrl"
@@ -34,6 +35,7 @@ export default {
   data() {
     return {
       name: "",
+      showResult: true,
       searchUsers: [],
     }
   },
@@ -46,6 +48,8 @@ export default {
         const res = await authStore().searchUser(this.name);
         console.log(res)
         this.searchUsers = res.output;
+      } else {
+        this.searchUsers = [];
       }
     }, 500)
   },
