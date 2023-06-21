@@ -3,7 +3,7 @@
   <div class="wrapper">
     <div class="header">
       <div>
-        <div class="name">{{ convInfo.user.fullName }}</div>
+        <div class="name">{{ convUser.fullName }}</div>
         <!-- <div class="info">
           67 members, 12 online
         </div> -->
@@ -36,13 +36,28 @@
       </div>
     </div>
     <!-- Body message -->
-    <div class="body flex-grow-1" style="padding: 0 12px;">
+    <div class="body">
       <div v-if="isFirstChat">
         <p>Bắt đầu cuộc trò chuyện nào</p>
       </div>
-      <div v-else>
-        đã chat
-      </div>
+      <template v-else>
+        <div class="conversation-reverse">
+          <div class="conversation-wrap">
+            <div 
+              v-for="message in listMessage"
+              :key="message.id"
+              class="message-wrap"
+            >
+              <div v-if="message.user.id == userId" class="message-content self-message">
+                <p>{{message.content}}</p>
+              </div>
+              <div v-else class="message-content other-message">
+                <p>{{message.content}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
     </div>
     <!-- Bottom message -->
     <div class="footer">
@@ -53,7 +68,13 @@
           variant="text"
           icon="far fa-paperclip"
         ></v-btn>
-        <input class="input-msg" v-model="message" type="text" placeholder="Write a message">
+        <input 
+          class="input-msg"
+          ref="messageInput"
+          v-model="message"
+          type="text"
+          placeholder="Write a message"
+        >
         <v-btn
           class="icon micro"
           size="small"
@@ -80,40 +101,70 @@ export default {
   data() {
     return {
       message: "",
+      userId: null,
       convInfo: reactive({}),
+      convUser: reactive({}),
+      offset: 0,
+      listMessage: [],
       isFirstChat: true
     }
   },
   computed: {
-    userId() {
+    convUserId() {
       return this.$route.params.userId;
     }
   },
   methods: {
     sendMessage() {
-      
+      const newMessage = {
+        user: {
+          id: this.userId
+        },
+        content: this.message,
+        convId: this.convInfo.id
+      }
+      this.listMessage.unshift(newMessage)
+      this.message = "";
+      this.$refs.messageInput.focus();
     },
     async getInfoConversation() {
-      const res = await authStore().getUserById(this.userId);
+      const res = await authStore().getUserById(this.convUserId);
       if (res.output != null) {
-        this.convInfo.user = {...res.output};
+        this.convUser = {...res.output};
         const convRes = await chatStore().getConversation(res.output.id);
         const convOutput = convRes.output
         if(convOutput != null) {
           this.isFirstChat = false;
-          this.convInfo.id = convOutput.id,
+          this.convInfo.id = convOutput.id;
           this.convInfo.type = convOutput.type
+          this.getMessages();
         } else {
           this.isFirstChat = true;
         }
       }
+    },
+    async getMessages() {
+      const res = await chatStore().getMessages(this.convInfo.id, this.offset)
+      if(res.output != null) {
+        this.listMessage = this.listMessage.concat(res.output);
+        this.offset++;
+      }
     }
   },
   created() {
+    this.userId = JSON.parse(localStorage.getItem('userInfo')).id
     this.getInfoConversation();
   },
+  mounted() {
+    const _this = this;
+    this.$refs.messageInput.addEventListener("keydown", function (e) {
+    if (e.code === "Enter") { 
+      _this.sendMessage()
+    }
+});
+  },
   watch: {
-    userId() {
+    convUserId() {
       this.getInfoConversation();
     }
   }
@@ -151,6 +202,44 @@ export default {
 .header .icon:hover {
   color: var(--text-color-active);
 }
+
+.body {
+  overflow-y: auto;
+  height: calc(100vh - 78px - 64px);
+  padding: 0 12px;
+  flex: 1;
+}
+
+.conversation-reverse {
+  height: 100%;
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.conversation-wrap {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+}
+
+.message-content {
+  padding: 5px 12px;
+  border-radius: 12px;
+  background-color: var(--background-component);
+  float: left;
+  margin-bottom: 4px;
+  color: var(--text-color-active);
+}
+.message-content p {
+  margin: 0;
+}
+
+.message-content.self-message {
+  background-color: var(--primary-color);
+  float: right;
+  color: #fff;
+}
+
 .footer {
   padding: 12px 0;
   display: flex;

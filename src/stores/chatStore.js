@@ -14,6 +14,12 @@ export const chatStore = defineStore({
         }
       })
       return res.data
+    },
+    async getMessages(convId, offset) {
+      const res = await ApiService.get(`/chat/${convId}/message`, {
+        params: {offset}
+      });
+      return res.data;
     }
   }
 })
