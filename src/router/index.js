@@ -54,12 +54,13 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach(async(to) => {
-  if (to.path == "/login" && authStore.authUser) {
-    router.push("/chat");
-  }
-  if (to.meta.requiredAuth && !authStore().authUser) {
-    router.push("/login");
+router.beforeEach(async (to, from, next) => {
+  if (to.name == "Login" && !authStore().checkTokenExpired()) {
+    next({name: "ChatDefault"})
+  } else if (to.meta.requiredAuth && authStore().checkTokenExpired()) {
+    next({ name: 'Login' })
+  } else {
+    next();
   }
 });
 

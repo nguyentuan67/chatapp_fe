@@ -2,6 +2,7 @@ import ApiService from "../services/api.service"
 import { defineStore } from "pinia"
 import router from "../router";
 import { statusCode } from "../constants";
+import jwtDecode from "jwt-decode"
 
 export const authStore = defineStore({
   id: "auth",
@@ -26,7 +27,6 @@ export const authStore = defineStore({
       })
       return res.data;
     },
-
     async login(username, password) {
       const res = await ApiService.post("/auth/login", {
         username,
@@ -39,6 +39,16 @@ export const authStore = defineStore({
         router.push("/chat")
       }
       return res.data;
+    },
+    checkTokenExpired() {
+      try {
+        const decodedToken = jwtDecode(this.jwtToken);
+        const currentTime = Date.now() / 1000;
+    
+        return decodedToken.exp < currentTime;
+      } catch (error) {
+        return true; // Nếu có lỗi khi giải mã token, coi như token đã hết hạn
+      }
     }
   }
 })
