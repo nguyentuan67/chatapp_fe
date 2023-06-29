@@ -54,7 +54,7 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach((to, from, next) => {
   if (to.name == "Login" && !authStore().checkTokenExpired()) {
     next({name: "ChatDefault"})
   } else if (to.meta.requiredAuth && authStore().checkTokenExpired()) {

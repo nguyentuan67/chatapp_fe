@@ -97,6 +97,7 @@
 import { reactive } from "vue";
 import { authStore } from "../stores/authStore";
 import { chatStore } from "../stores/chatStore";
+import { socketStore } from "../stores/socketStore";
 export default {
   data() {
     return {
@@ -106,7 +107,7 @@ export default {
       convUser: reactive({}),
       offset: 0,
       listMessage: [],
-      isFirstChat: true
+      isFirstChat: false
     }
   },
   computed: {
@@ -123,6 +124,7 @@ export default {
         content: this.message,
         convId: this.convInfo.id
       }
+      socketStore().sendMessage(this.message, this.convInfo.id, this.userId, this.convUserId)
       this.listMessage.unshift(newMessage)
       this.message = "";
       this.$refs.messageInput.focus();
