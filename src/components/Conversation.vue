@@ -37,7 +37,7 @@
     </div>
     <!-- Body message -->
     <div class="body">
-      <div v-if="isFirstChat">
+      <div v-if="listMessage.length == 0">
         <p>Bắt đầu cuộc trò chuyện nào</p>
       </div>
       <template v-else>
@@ -97,8 +97,11 @@
 import { reactive } from "vue";
 import { authStore } from "../stores/authStore";
 import { chatStore } from "../stores/chatStore";
-import { socketStore } from "../stores/socketStore";
 export default {
+  props: {
+    listMessage: { type: Array, require: true}
+  },
+  emits: ["getMessages", "sendMessage", "updateMessage"],
   data() {
     return {
       message: "",
@@ -106,8 +109,6 @@ export default {
       convInfo: reactive({}),
       convUser: reactive({}),
       offset: 0,
-      listMessage: [],
-      isFirstChat: false
     }
   },
   computed: {
@@ -116,16 +117,14 @@ export default {
     }
   },
   methods: {
-    sendMessage() {
-      const newMessage = {
-        user: {
-          id: this.userId
-        },
-        content: this.message,
-        convId: this.convInfo.id
+    async sendMessage() {
+      if (this.convInfo.id == null) {
+        const listUserId = [this.convUserId, this.userId]
+        const res = await chatStore().createConversation(listUserId);
+        console.log(res);
+        this.convInfo.id = res.output.id
       }
-      socketStore().sendMessage(this.message, this.convInfo.id, this.userId, this.convUserId)
-      this.listMessage.unshift(newMessage)
+      this.$emit("sendMessage", this.message, this.convInfo.id, this.userId, this.convUserId)
       this.message = "";
       this.$refs.messageInput.focus();
     },
@@ -135,29 +134,29 @@ export default {
         this.convUser = {...res.output};
         const convRes = await chatStore().getConversation(res.output.id);
         const convOutput = convRes.output
+        this.offset = 0;
         if(convOutput != null) {
-          this.isFirstChat = false;
           this.convInfo.id = convOutput.id;
           this.convInfo.type = convOutput.type
           this.getMessages();
-        } else {
-          this.isFirstChat = true;
         }
       }
     },
     async getMessages() {
       const res = await chatStore().getMessages(this.convInfo.id, this.offset)
       if(res.output != null) {
-        this.listMessage = this.listMessage.concat(res.output);
+        this.offset == 0 ?
+        this.$emit("getMessages", res.output) :
+        this.$emit("updateMessage", res.output)
         this.offset++;
       }
     }
   },
   created() {
     this.userId = JSON.parse(localStorage.getItem('userInfo')).id
-    this.getInfoConversation();
   },
   mounted() {
+    this.getInfoConversation();
     const _this = this;
     this.$refs.messageInput.addEventListener("keydown", function (e) {
     if (e.code === "Enter") { 
@@ -167,6 +166,7 @@ export default {
   },
   watch: {
     convUserId() {
+      console.log("watch");
       this.getInfoConversation();
     }
   }
@@ -206,16 +206,27 @@ export default {
 }
 
 .body {
-  overflow-y: auto;
-  height: calc(100vh - 78px - 64px);
-  padding: 0 12px;
+  height: 100%;
   flex: 1;
 }
 
 .conversation-reverse {
-  height: 100%;
+  height: calc(100vh - 78px - 64px);
+  padding: 12px 12px 0;
+  overflow-y: auto;
   display: flex;
   flex-direction: column-reverse;
+}
+
+.conversation-reverse::-webkit-scrollbar {
+  width: 6px;
+}
+.conversation-reverse::-webkit-scrollbar-track {
+  background: var(--background-component); 
+}
+.conversation-reverse::-webkit-scrollbar-thumb {
+  background: var(--secondary-color); 
+  border-radius: 8px;
 }
 
 .conversation-wrap {

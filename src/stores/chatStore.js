@@ -15,6 +15,12 @@ export const chatStore = defineStore({
       })
       return res.data
     },
+    async createConversation(listUserId) {
+      const res = await ApiService.post("/chat/conversation", {
+        listUserId
+      })
+      return res.data
+    },
     async getMessages(convId, offset) {
       const res = await ApiService.get(`/chat/${convId}/message`, {
         params: {offset}
