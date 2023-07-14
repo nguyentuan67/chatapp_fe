@@ -4,7 +4,7 @@ import ApiService from "../services/api.service"
 export const chatStore = defineStore({
   id: "chatStore",
   state: () => ({
-    
+    listConversation: null,
   }),
   actions: {
     async getConversation(userId) {
@@ -26,6 +26,17 @@ export const chatStore = defineStore({
         params: {offset}
       });
       return res.data;
+    },
+    async getConversations() {
+      const res = await ApiService.get("/chat/conversations")
+      this.listConversation = res.data.output
+      // console.log(this.listConversation);
+      return res.data
+    },
+    updateConversations(message) {
+      const index = this.listConversation.findIndex(conversation => conversation.id == message.convId)
+      this.listConversation[index].lastMessage = {...message}
+      this.listConversation.sort((a, b) => b.lastMessage.time.localeCompare(a.lastMessage.time))
     }
   }
 })

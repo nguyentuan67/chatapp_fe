@@ -24,6 +24,7 @@ import { ref } from 'vue';
 import ChatContact from '../components/ChatContact.vue';
 import Conversation from '../components/Conversation.vue';
 import { authStore } from "../stores/authStore";
+import { chatStore } from '../stores/chatStore';
 
 export default {
   name: "ChatPage",
@@ -83,7 +84,9 @@ export default {
     },
     handleMessage(msg) {
       const chatMessage = JSON.parse(msg);
+      console.log(chatMessage);
       this.listMessage.unshift(chatMessage)
+      chatStore().updateConversations(chatMessage)
     },
     subscribeToConversation(userId) {
       this.activeSubscriptions.push({ id: userId, sub: this.stompClient.subscribe(`/topic/user/${userId}`, (message) => {
