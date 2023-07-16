@@ -3,7 +3,7 @@
     permanent
     width="350"
   >
-    <ChatContact />
+    <ChatContact :list-contact="listConversation"/>
   </v-navigation-drawer>
   <v-main>
     <Conversation 
@@ -39,6 +39,7 @@ export default {
       listMessage: ref([]),
       isConnected: false,
       stompClient: null,
+      listConversation: ref([])
     }
   },
   computed: {
@@ -86,7 +87,7 @@ export default {
       const chatMessage = JSON.parse(msg);
       console.log(chatMessage);
       this.listMessage.unshift(chatMessage)
-      chatStore().updateConversations(chatMessage)
+      this.updateConversations(chatMessage)
     },
     subscribeToConversation(userId) {
       this.activeSubscriptions.push({ id: userId, sub: this.stompClient.subscribe(`/topic/user/${userId}`, (message) => {
@@ -99,10 +100,23 @@ export default {
     },
     updateMessage(message) {
       this.listMessage = this.listMessage.concat(messages)
+    },
+    async getConversations() {
+      const res = await chatStore().getConversations();
+      this.listConversation = res.output
+    },
+    updateConversations(message) {
+      console.log(this.listConversation);
+      const index = this.listConversation.findIndex(conversation => conversation.id == message.convId)
+      this.listConversation[index].lastMessage = {...message}
+      this.listConversation.sort((a, b) => b.lastMessage.time.localeCompare(a.lastMessage.time))
     }
   },
   mounted() {
     this.connect()
+  },
+  created() {
+    this.getConversations();
   }
 }
 </script>

@@ -32,11 +32,6 @@ export const chatStore = defineStore({
       this.listConversation = res.data.output
       // console.log(this.listConversation);
       return res.data
-    },
-    updateConversations(message) {
-      const index = this.listConversation.findIndex(conversation => conversation.id == message.convId)
-      this.listConversation[index].lastMessage = {...message}
-      this.listConversation.sort((a, b) => b.lastMessage.time.localeCompare(a.lastMessage.time))
     }
   }
 })
