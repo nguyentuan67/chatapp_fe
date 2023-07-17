@@ -31,9 +31,13 @@ const vuetify = createVuetify({
 
 const pinia = createPinia();
 
-createApp(App)
+const app = createApp(App)
+
+app
   .component("font-awesome-icon", FontAwesomeIcon)
   .use(vuetify)
   .use(router)
   .use(pinia)
   .mount('#app')
+  
+export default app;
