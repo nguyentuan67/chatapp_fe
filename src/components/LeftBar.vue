@@ -31,11 +31,20 @@
         <i class="nav-icon"  :class="item.icon"></i>
         <span class="nav-title">{{ item.title }}</span>
       </v-list-item>
+      <v-list-item
+        active-class="nav-active"
+        class="nav-item"
+        @click="logout"
+      >
+        <i class="nav-icon fal fa-sign-out"></i>
+        <span class="nav-title">Logout</span>
+      </v-list-item>
     </v-list>
   </div>
 </template>
 
 <script>
+import { authStore } from '../stores/authStore';
 export default {
   name: "LeftBar",
   data() {
@@ -49,6 +58,11 @@ export default {
       botItems: [
         {title: "Setting", icon: "fal fa-cog", path: {name: "Home"}},
       ],
+    }
+  },
+  methods: {
+    logout() {
+      authStore().logout()
     }
   }
 }

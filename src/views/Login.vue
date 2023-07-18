@@ -204,6 +204,7 @@ a {
   min-width: 350px;
 }
 .submit-btn {
+  height: 50px !important;
   width: 100%;
   background-color: var(--primary-color);
   color: #fff;

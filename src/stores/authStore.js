@@ -40,9 +40,27 @@ export const authStore = defineStore({
       }
       return res.data;
     },
+    async signup(username, firstName, lastName, password, gender) {
+      const reqBody = {
+        username,
+        password,
+        firstName,
+        lastName,
+        gender: gender ? true : false
+      }
+      console.log(reqBody);
+      const res = await ApiService.post("/auth/signup", reqBody);
+      return res.data;
+    },
+    logout() {
+      this.jwtToken = null
+      localStorage.removeItem("userInfo")
+      localStorage.removeItem("token")
+      router.push("/login")
+    },
     checkTokenExpired() {
       try {
-        const decodedToken = jwtDecode(this.jwtToken);
+        const decodedToken = jwtDecode(localStorage.getItem("token"));
         const currentTime = Date.now() / 1000;
     
         return decodedToken.exp < currentTime;

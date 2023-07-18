@@ -2,8 +2,6 @@ import axios from "axios";
 import router from "../router";
 
 let BASE_URL = import.meta.env.VITE_APP_ROOT_BE;
-let userInfo = localStorage.getItem('userInfo') ? localStorage.getItem('userInfo') : null;
-let jwtToken = userInfo ? JSON.parse(userInfo).jwtToken : "";
 const instance = axios.create({
   baseURL: BASE_URL,
   headers: {
@@ -13,6 +11,7 @@ const instance = axios.create({
 })
 
 instance.interceptors.request.use((config) => {
+  let jwtToken = localStorage.getItem("token") || ""
   if(jwtToken) {
     config.headers["Authorization"] = "Bearer " + jwtToken;
   }
@@ -34,6 +33,7 @@ instance.interceptors.response.use((response) => {
     // Nếu không xác thực, xóa mã jwt và chuyển hướng người dùng về trang đăng nhập
     if (status === 401) {
       localStorage.removeItem("userInfo");
+      localStorage.removeItem("token")
       router.push("/login");
     }
     throw new Error(error.response ? error.response.data : error.message);
