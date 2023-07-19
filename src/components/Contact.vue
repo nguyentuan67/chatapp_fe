@@ -8,21 +8,21 @@
       <div class="contact-body">
         <div class="d-flex align-items-center justify-content-between">
           <div class="name">{{ contact.name || userContact.fullName }}</div>
-          <div class="info">
+          <!-- <div class="info">
             <i class="fal fa-check" style="margin-right: -6px;"></i>
             <i class="fal fa-check"></i>
             <span class="ms-2">4m</span>
-          </div>
+          </div> -->
         </div>
         <div class="d-flex align-items-center justify-content-between">
           <div class="msg" v-if="contact.lastMessage.user.id != userId">
             {{contact.lastMessage.user.fullName + ": " +  contact.lastMessage.content}}
           </div>
           <div class="msg" v-else>{{ "Bạn: "+ contact.lastMessage.content }}</div>
-          <div class="info">
+          <!-- <div class="info">
             <span class="count flex-center">5</span>
             <i class="fas fa-thumbtack me-1" style="transform: rotate(40deg); margin-bottom: -4px;"></i>
-          </div>
+          </div> -->
         </div>
       </div>
     </router-link>
