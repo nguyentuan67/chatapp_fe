@@ -61,34 +61,46 @@
     </div>
     <!-- Bottom message -->
     <div class="footer">
-      <div class="d-flex align-items-center flex-grow-1">
+      <v-btn
+        class="icon"
+        size="x-small"
+        variant="text"
+        icon="far fa-paperclip"
+      ></v-btn>
+      <div class="input-wrap">
+        <input 
+        class="input-msg"
+        ref="messageInput"
+        v-model="message"
+        type="text"
+        placeholder="Write a message"
+        >
+        <EmojiPicker
+          v-show="showEmojis"
+          class="emoji-picker"
+          @emoji_click="handleEmojiClick"
+        />
         <v-btn
           class="icon"
           size="x-small"
           variant="text"
-          icon="far fa-paperclip"
-        ></v-btn>
-        <input 
-          class="input-msg"
-          ref="messageInput"
-          v-model="message"
-          type="text"
-          placeholder="Write a message"
-        >
-        <v-btn
-          class="icon micro"
-          size="small"
-          variant="text"
-          icon="fal fa-microphone"
-        ></v-btn>
-        <v-btn
-          class="icon send"
-          size="small"
-          variant="text"
-          @click="sendMessage"
-          icon="fal fa-paper-plane"
+          icon="fal fa-laugh"
+          @click="showEmojis = !showEmojis"
         ></v-btn>
       </div>
+      <v-btn
+        class="icon micro"
+        size="small"
+        variant="text"
+        icon="fal fa-microphone"
+      ></v-btn>
+      <v-btn
+        class="icon send"
+        size="small"
+        variant="text"
+        @click="sendMessage"
+        icon="fal fa-paper-plane"
+      ></v-btn>
     </div>
   </div>
 </template>
@@ -97,11 +109,15 @@
 import { reactive } from "vue";
 import { authStore } from "../stores/authStore";
 import { chatStore } from "../stores/chatStore";
+import EmojiPicker from "./EmojiPicker/EmojiPicker.vue";
 export default {
   props: {
     listMessage: { type: Array, require: true}
   },
   emits: ["getMessages", "sendMessage", "updateMessage"],
+  components: {
+    EmojiPicker
+  },
   data() {
     return {
       message: "",
@@ -109,6 +125,7 @@ export default {
       convInfo: reactive({}),
       convUser: reactive({}),
       offset: 0,
+      showEmojis: false,
     }
   },
   computed: {
@@ -150,10 +167,21 @@ export default {
         this.$emit("updateMessage", res.output)
         this.offset++;
       }
+    },
+    handleEmojiClick(emoji) {
+      this.message += emoji
+      this.$refs.messageInput.focus()
     }
   },
   created() {
     this.userId = JSON.parse(localStorage.getItem('userInfo')).id
+    document.addEventListener("click", e => {
+      const emojiPicker = document.querySelector(".emoji-picker");
+      const showEmojiIcon = document.querySelector(".emoji-picker + .icon");
+      if ( this.showEmojis && e.target != emojiPicker && !showEmojiIcon.contains(e.target)) {
+        this.showEmojis = false
+      }
+    })
   },
   mounted() {
     this.getInfoConversation();
@@ -166,7 +194,6 @@ export default {
   },
   watch: {
     convUserId() {
-      console.log("watch");
       this.getInfoConversation();
     }
   }
@@ -256,16 +283,26 @@ export default {
 .footer {
   padding: 12px 0;
   display: flex;
+  align-items: center;
   width: 100%;
 }
+.input-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  outline: none;
+  background-color: var(--background-component);
+  padding: 6px 2px 6px 14px;
+  border-radius: 99px;
+  height: 40px;
+  position: relative;
+}
 .input-msg {
+  font-size: 15px;
   flex: 1;
   border: none;
   outline: none;
-  background-color: var(--background-component);
-  padding: 8px 14px;
-  border-radius: 99px;
-  font-size: 15px;
+  background-color: transparent;
   color: var(--text-color-active);
 }
 .input-msg::placeholder {
@@ -274,15 +311,20 @@ export default {
 .icon.send {
   display: none;
 }
-.input-msg:not(:placeholder-shown) ~ .icon.micro {
+.footer:has(.input-wrap .input-msg:not(:placeholder-shown)) > .icon.micro {
   display: none;
 }
-.input-msg:not(:placeholder-shown) ~ .icon.send {
+.footer:has(.input-wrap .input-msg:not(:placeholder-shown)) > .icon.send {
   display: inline-grid;
 }
 .footer .icon {
   color: var(--primary-color);
   font-size: 14px;
   margin: 0 6px;
+}
+.emoji-picker {
+  position: absolute;
+  bottom: calc(100% + 20px);
+  right: 0;
 }
 </style>
