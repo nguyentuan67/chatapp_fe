@@ -48,11 +48,12 @@
               :key="message.id"
               class="message-wrap"
             >
-              <div v-if="message.user.id == userId" class="message-content self-message">
-                <p>{{message.content}}</p>
+              <div class="message-item self-message" v-if="message.user.id == userId">
+                <p class="message-content">{{message.content}}</p>
               </div>
-              <div v-else class="message-content other-message">
-                <p>{{message.content}}</p>
+              <div v-else class="message-item other-message">
+                <img :src="message.user.avatarUrl" alt="">
+                <p class="message-content">{{message.content}}</p>
               </div>
             </div>
           </div>
@@ -261,20 +262,33 @@ export default {
   flex-direction: column-reverse;
   justify-content: flex-end;
 }
+.message-wrap:has(.other-message img) + .message-wrap .other-message img {
+  visibility: hidden;
+}
+.message-item.other-message {
+  display: flex;
+  align-items: center;
+}
+.message-item.other-message img {
+  width: 30px;
+  height: auto;
+  margin: 0 5px 5px;
+  display: block;
+}
 
 .message-content {
-  padding: 5px 12px;
-  border-radius: 12px;
+  padding: 6px 12px;
+  border-radius: 18px;
   background-color: var(--background-component);
   float: left;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
   color: var(--text-color-active);
 }
 .message-content p {
   margin: 0;
 }
 
-.message-content.self-message {
+.self-message .message-content {
   background-color: var(--primary-color);
   float: right;
   color: #fff;
