@@ -48,11 +48,12 @@
               :key="message.id"
               class="message-wrap"
             >
-              <div v-if="message.user.id == userId" class="message-content self-message">
-                <p>{{message.content}}</p>
+              <div class="message-item self-message" v-if="message.user.id == userId">
+                <p class="message-content">{{message.content}}</p>
               </div>
-              <div v-else class="message-content other-message">
-                <p>{{message.content}}</p>
+              <div v-else class="message-item other-message">
+                <img :src="message.user.avatarUrl" alt="">
+                <div class="message-content">{{message.content}}</div>
               </div>
             </div>
           </div>
@@ -242,7 +243,7 @@ export default {
   padding: 12px 12px 0;
   overflow-y: auto;
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
 }
 
 .conversation-reverse::-webkit-scrollbar {
@@ -258,23 +259,63 @@ export default {
 
 .conversation-wrap {
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
   justify-content: flex-end;
+}
+.message-wrap:has(.other-message) + .message-wrap .other-message img {
+  visibility: hidden;
+}
+.message-wrap:not(.message-wrap:has(.other-message):has(+ .message-wrap .other-message)) .message-content {
+  border-bottom-left-radius: 16px;
+}
+.message-wrap:not(.message-wrap:has(.self-message):has(+ .message-wrap .self-message)) .message-content {
+  border-bottom-right-radius: 16px;
+}
+.message-wrap:has(.other-message) + .message-wrap:has(.self-message) .message-content {
+  border-top-right-radius: 16px;
+}
+.message-wrap:has(.self-message) + .message-wrap:has(.other-message) .message-content {
+  border-top-left-radius: 16px;
+}
+.message-wrap:first-child .message-content {
+  border-top-left-radius: 16px;
+}
+.message-wrap
+
+.message-item.other-message {
+  display: flex;
+  align-items: center;
+}
+.message-item.other-message img {
+  width: 30px;
+  height: auto;
+  margin: 0 5px 5px;
+  display: block;
 }
 
 .message-content {
-  padding: 5px 12px;
-  border-radius: 12px;
+  padding: 7px 12px 8px;
+  border-radius: 5px;
   background-color: var(--background-component);
   float: left;
-  margin-bottom: 4px;
+  margin-bottom: 1px;
   color: var(--text-color-active);
+  font-size: 15px;
+  line-height: 20px;
+}
+.other-message .message-content {
+  border-top-right-radius: 18px;
+  border-bottom-right-radius: 18px;
+}
+.self-message .message-content {
+  border-top-left-radius: 18px;
+  border-bottom-left-radius: 18px;
 }
 .message-content p {
   margin: 0;
 }
 
-.message-content.self-message {
+.self-message .message-content {
   background-color: var(--primary-color);
   float: right;
   color: #fff;
