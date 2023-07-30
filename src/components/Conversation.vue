@@ -243,7 +243,7 @@ export default {
   padding: 12px 12px 0;
   overflow-y: auto;
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
 }
 
 .conversation-reverse::-webkit-scrollbar {
@@ -259,26 +259,29 @@ export default {
 
 .conversation-wrap {
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   justify-content: flex-end;
 }
 .message-wrap:has(.other-message) + .message-wrap .other-message img {
   visibility: hidden;
 }
 .message-wrap:not(.message-wrap:has(.other-message):has(+ .message-wrap .other-message)) .message-content {
-  border-bottom-left-radius: 16px;
+  border-top-left-radius: 16px;
 }
 .message-wrap:not(.message-wrap:has(.self-message):has(+ .message-wrap .self-message)) .message-content {
-  border-bottom-right-radius: 16px;
-}
-.message-wrap:has(.other-message) + .message-wrap:has(.self-message) .message-content {
   border-top-right-radius: 16px;
 }
+.message-wrap:has(.other-message) + .message-wrap:has(.self-message) .message-content {
+  border-bottom-right-radius: 16px;
+}
 .message-wrap:has(.self-message) + .message-wrap:has(.other-message) .message-content {
-  border-top-left-radius: 16px;
+  border-bottom-left-radius: 16px;
 }
 .message-wrap:first-child .message-content {
-  border-top-left-radius: 16px;
+  border-bottom-left-radius: 16px;
+}
+.message-wrap:first-child .message-content {
+  border-bottom-right-radius: 16px;
 }
 .message-wrap
 
