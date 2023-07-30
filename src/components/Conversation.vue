@@ -41,8 +41,8 @@
         <p>Bắt đầu cuộc trò chuyện nào</p>
       </div>
       <template v-else>
-        <div class="conversation-reverse">
-          <div class="conversation-wrap">
+        <div class="conversation-wrap" ref="conversation" @scroll="loadMessage">
+          <div class="conversation-reverse">
             <div 
               v-for="message in listMessage"
               :key="message.id"
@@ -127,6 +127,8 @@ export default {
       convUser: reactive({}),
       offset: 0,
       showEmojis: false,
+      isFetching: false,
+      hasMoreMessages: true,
     }
   },
   computed: {
@@ -161,12 +163,24 @@ export default {
       }
     },
     async getMessages() {
+      this.isFetching = true;
       const res = await chatStore().getMessages(this.convInfo.id, this.offset)
       if(res.output != null) {
         this.offset == 0 ?
         this.$emit("getMessages", res.output) :
         this.$emit("updateMessage", res.output)
         this.offset++;
+      } else {
+        this.hasMoreMessages = false;
+      }
+      this.isFetching = false
+    },
+    loadMessage() {
+      const conversation = this.$refs.conversation;
+      const scrollPosition = conversation.scrollHeight - conversation.clientHeight;
+
+      if (scrollPosition == -conversation.scrollTop && !this.isFetching && this.hasMoreMessages) {
+        this.getMessages();
       }
     },
     handleEmojiClick(emoji) {
@@ -238,7 +252,7 @@ export default {
   flex: 1;
 }
 
-.conversation-reverse {
+.conversation-wrap {
   height: calc(100vh - 78px - 64px);
   padding: 12px 12px 0;
   overflow-y: auto;
@@ -246,18 +260,18 @@ export default {
   flex-direction: column-reverse;
 }
 
-.conversation-reverse::-webkit-scrollbar {
+.conversation-wrap::-webkit-scrollbar {
   width: 6px;
 }
-.conversation-reverse::-webkit-scrollbar-track {
+.conversation-wrap::-webkit-scrollbar-track {
   background: var(--background-component); 
 }
-.conversation-reverse::-webkit-scrollbar-thumb {
+.conversation-wrap::-webkit-scrollbar-thumb {
   background: var(--secondary-color); 
   border-radius: 8px;
 }
 
-.conversation-wrap {
+.conversation-reverse {
   display: flex;
   flex-direction: column-reverse;
   justify-content: flex-end;

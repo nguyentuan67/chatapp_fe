@@ -85,7 +85,6 @@ export default {
     },
     handleMessage(msg) {
       const chatMessage = JSON.parse(msg);
-      console.log(chatMessage);
       this.listMessage.unshift(chatMessage)
       this.updateConversations(chatMessage)
     },
@@ -99,14 +98,13 @@ export default {
       this.listMessage = [...messages]
     },
     updateMessage(message) {
-      this.listMessage = this.listMessage.concat(messages)
+      this.listMessage = this.listMessage.concat(message)
     },
     async getConversations() {
       const res = await chatStore().getConversations();
       this.listConversation = res.output
     },
     updateConversations(message) {
-      console.log(this.listConversation);
       const index = this.listConversation.findIndex(conversation => conversation.id == message.convId)
       this.listConversation[index].lastMessage = {...message}
       this.listConversation.sort((a, b) => b.lastMessage.time.localeCompare(a.lastMessage.time))
