@@ -25,6 +25,9 @@ export default {
     listContact: { type: Array }
   },
   data() {
+    return {
+      
+    }
   },
 }
 </script>

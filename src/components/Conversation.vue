@@ -141,10 +141,9 @@ export default {
       if (this.convInfo.id == null) {
         const listUserId = [this.convUserId, this.userId]
         const res = await chatStore().createConversation(listUserId);
-        console.log(res);
         this.convInfo.id = res.output.id
       }
-      this.$emit("sendMessage", this.message, this.convInfo.id, this.userId, this.convUserId)
+      this.$emit("sendMessage", this.message, this.convInfo.id, this.userId, this.convUser)
       this.message = "";
       this.$refs.messageInput.focus();
     },
@@ -155,10 +154,13 @@ export default {
         const convRes = await chatStore().getConversation(res.output.id);
         const convOutput = convRes.output
         this.offset = 0;
+        this.hasMoreMessages = true;
+        this.$emit("getMessages", []) 
         if(convOutput != null) {
           this.convInfo.id = convOutput.id;
           this.convInfo.type = convOutput.type
           this.getMessages();
+          this.$refs.conversation.scrollTop = 0
         }
       }
     },
@@ -177,8 +179,7 @@ export default {
     },
     loadMessage() {
       const conversation = this.$refs.conversation;
-      const scrollPosition = conversation.scrollHeight - conversation.clientHeight;
-
+      let scrollPosition = conversation.scrollHeight - conversation.clientHeight;
       if (scrollPosition == -conversation.scrollTop && !this.isFetching && this.hasMoreMessages) {
         this.getMessages();
       }
