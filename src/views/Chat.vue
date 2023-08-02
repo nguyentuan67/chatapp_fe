@@ -39,7 +39,8 @@ export default {
       listMessage: ref([]),
       isConnected: false,
       stompClient: null,
-      listConversation: ref([])
+      listConversation: ref([]),
+      currentConvUser: null,
     }
   },
   computed: {
@@ -67,13 +68,14 @@ export default {
       })
       this.isConnected = true;
     },
-    sendMessage(message, conversationId, userId, convUserId) {
+    sendMessage(message, conversationId, userId, convUser) {
       const chatMessage = { 
         'conversationId': conversationId,
         'userId': userId,
         'content': message,
       };
-      this.stompClient.send(`/app/chat/user/${convUserId}`, {}, JSON.stringify(chatMessage));
+      this.stompClient.send(`/app/chat/user/${convUser.id}`, {}, JSON.stringify(chatMessage));
+      this.currentConvUser = convUser;
     },
     disconnect () {
       if (this.stompClient != null) {
@@ -85,7 +87,6 @@ export default {
     },
     handleMessage(msg) {
       const chatMessage = JSON.parse(msg);
-      console.log(chatMessage);
       this.listMessage.unshift(chatMessage)
       this.updateConversations(chatMessage)
     },
@@ -99,18 +100,41 @@ export default {
       this.listMessage = [...messages]
     },
     updateMessage(message) {
-      this.listMessage = this.listMessage.concat(messages)
+      this.listMessage = this.listMessage.concat(message)
     },
     async getConversations() {
       const res = await chatStore().getConversations();
       this.listConversation = res.output
+      console.log(this.listConversation);
     },
     updateConversations(message) {
-      console.log(this.listConversation);
+      console.log(message);
       const index = this.listConversation.findIndex(conversation => conversation.id == message.convId)
-      this.listConversation[index].lastMessage = {...message}
-      this.listConversation.sort((a, b) => b.lastMessage.time.localeCompare(a.lastMessage.time))
-    }
+      console.log(index);
+      if(index == -1) {
+        const newConv = {
+          id: message.convId,
+          name: null,
+          avatarUrl: null,
+          type: 1,
+          lastMessage: message,
+          users: [
+            message.user,
+            this.currentConvUser,
+          ]
+        }
+        console.log(newConv);
+        console.log(this.listConversation);
+        this.listConversation.unshift(newConv)
+        console.log(this.listConversation);
+      } else {
+        this.listConversation[index].lastMessage = {...message}
+        this.listConversation.sort((a, b) => b.lastMessage.time.localeCompare(a.lastMessage.time))
+      }
+    },
+    addConversation(conversation) {
+
+    },
   },
   mounted() {
     this.connect()

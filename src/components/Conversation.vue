@@ -41,8 +41,8 @@
         <p>Bắt đầu cuộc trò chuyện nào</p>
       </div>
       <template v-else>
-        <div class="conversation-reverse">
-          <div class="conversation-wrap">
+        <div class="conversation-wrap" ref="conversation" @scroll="loadMessage">
+          <div class="conversation-reverse">
             <div 
               v-for="message in listMessage"
               :key="message.id"
@@ -127,6 +127,8 @@ export default {
       convUser: reactive({}),
       offset: 0,
       showEmojis: false,
+      isFetching: false,
+      hasMoreMessages: true,
     }
   },
   computed: {
@@ -139,10 +141,9 @@ export default {
       if (this.convInfo.id == null) {
         const listUserId = [this.convUserId, this.userId]
         const res = await chatStore().createConversation(listUserId);
-        console.log(res);
         this.convInfo.id = res.output.id
       }
-      this.$emit("sendMessage", this.message, this.convInfo.id, this.userId, this.convUserId)
+      this.$emit("sendMessage", this.message, this.convInfo.id, this.userId, this.convUser)
       this.message = "";
       this.$refs.messageInput.focus();
     },
@@ -153,20 +154,34 @@ export default {
         const convRes = await chatStore().getConversation(res.output.id);
         const convOutput = convRes.output
         this.offset = 0;
+        this.hasMoreMessages = true;
+        this.$emit("getMessages", []) 
         if(convOutput != null) {
           this.convInfo.id = convOutput.id;
           this.convInfo.type = convOutput.type
           this.getMessages();
+          this.$refs.conversation.scrollTop = 0
         }
       }
     },
     async getMessages() {
+      this.isFetching = true;
       const res = await chatStore().getMessages(this.convInfo.id, this.offset)
       if(res.output != null) {
         this.offset == 0 ?
         this.$emit("getMessages", res.output) :
         this.$emit("updateMessage", res.output)
         this.offset++;
+      } else {
+        this.hasMoreMessages = false;
+      }
+      this.isFetching = false
+    },
+    loadMessage() {
+      const conversation = this.$refs.conversation;
+      let scrollPosition = conversation.scrollHeight - conversation.clientHeight;
+      if (scrollPosition == -conversation.scrollTop && !this.isFetching && this.hasMoreMessages) {
+        this.getMessages();
       }
     },
     handleEmojiClick(emoji) {
@@ -238,47 +253,50 @@ export default {
   flex: 1;
 }
 
-.conversation-reverse {
+.conversation-wrap {
   height: calc(100vh - 78px - 64px);
   padding: 12px 12px 0;
   overflow-y: auto;
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
 }
 
-.conversation-reverse::-webkit-scrollbar {
+.conversation-wrap::-webkit-scrollbar {
   width: 6px;
 }
-.conversation-reverse::-webkit-scrollbar-track {
+.conversation-wrap::-webkit-scrollbar-track {
   background: var(--background-component); 
 }
-.conversation-reverse::-webkit-scrollbar-thumb {
+.conversation-wrap::-webkit-scrollbar-thumb {
   background: var(--secondary-color); 
   border-radius: 8px;
 }
 
-.conversation-wrap {
+.conversation-reverse {
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   justify-content: flex-end;
 }
 .message-wrap:has(.other-message) + .message-wrap .other-message img {
   visibility: hidden;
 }
 .message-wrap:not(.message-wrap:has(.other-message):has(+ .message-wrap .other-message)) .message-content {
-  border-bottom-left-radius: 16px;
+  border-top-left-radius: 16px;
 }
 .message-wrap:not(.message-wrap:has(.self-message):has(+ .message-wrap .self-message)) .message-content {
-  border-bottom-right-radius: 16px;
-}
-.message-wrap:has(.other-message) + .message-wrap:has(.self-message) .message-content {
   border-top-right-radius: 16px;
 }
+.message-wrap:has(.other-message) + .message-wrap:has(.self-message) .message-content {
+  border-bottom-right-radius: 16px;
+}
 .message-wrap:has(.self-message) + .message-wrap:has(.other-message) .message-content {
-  border-top-left-radius: 16px;
+  border-bottom-left-radius: 16px;
 }
 .message-wrap:first-child .message-content {
-  border-top-left-radius: 16px;
+  border-bottom-left-radius: 16px;
+}
+.message-wrap:first-child .message-content {
+  border-bottom-right-radius: 16px;
 }
 .message-wrap
 
