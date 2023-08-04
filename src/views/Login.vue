@@ -11,7 +11,7 @@
         <v-carousel-item selected-class="slide-active">
           <div class="animation-wrap">
             <lottie-player class="img-animation" src="https://assets6.lottiefiles.com/packages/lf20_QpolL2.json"  background="transparent"  speed="1" loop autoplay></lottie-player>
-            <h2 class="animation-title">connect anytime conveniently and easy</h2>
+            <h2 class="animation-title">Connect anytime conveniently and easy</h2>
           </div>
         </v-carousel-item>
         <v-carousel-item selected-class="slide-active">
