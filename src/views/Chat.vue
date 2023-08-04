@@ -12,6 +12,7 @@
       @get-messages="getMessage"
       @update-message="updateMessage"
       @send-message="sendMessage"
+      @getConversation="convId => currentConvId = convId"
     />
     <div v-else>
       Default chat page
@@ -41,6 +42,7 @@ export default {
       stompClient: null,
       listConversation: ref([]),
       currentConvUser: null,
+      currentConvId: null,
     }
   },
   computed: {
@@ -87,7 +89,9 @@ export default {
     },
     handleMessage(msg) {
       const chatMessage = JSON.parse(msg);
-      this.listMessage.unshift(chatMessage)
+      if (chatMessage.convId == this.currentConvId) {
+        this.listMessage.unshift(chatMessage)
+      }
       this.updateConversations(chatMessage)
     },
     subscribeToConversation(userId) {
@@ -107,10 +111,8 @@ export default {
       this.listConversation = res.output
       console.log(this.listConversation);
     },
-    updateConversations(message) {
-      console.log(message);
-      const index = this.listConversation.findIndex(conversation => conversation.id == message.convId)
-      console.log(index);
+    updateConversations(message, convMsg) {
+        const index = this.listConversation.findIndex(conversation => conversation.id == message.convId)
       if(index == -1) {
         const newConv = {
           id: message.convId,
@@ -123,13 +125,12 @@ export default {
             this.currentConvUser,
           ]
         }
-        console.log(newConv);
-        console.log(this.listConversation);
         this.listConversation.unshift(newConv)
-        console.log(this.listConversation);
       } else {
         this.listConversation[index].lastMessage = {...message}
-        this.listConversation.sort((a, b) => b.lastMessage.time.localeCompare(a.lastMessage.time))
+        if (index != 0) {
+          this.listConversation.sort((a, b) => b.lastMessage.time.localeCompare(a.lastMessage.time))
+        }
       }
     },
     addConversation(conversation) {

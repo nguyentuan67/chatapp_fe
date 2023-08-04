@@ -115,7 +115,7 @@ export default {
   props: {
     listMessage: { type: Array, require: true}
   },
-  emits: ["getMessages", "sendMessage", "updateMessage"],
+  emits: ["getMessages", "sendMessage", "updateMessage", "getConversation"],
   components: {
     EmojiPicker
   },
@@ -155,6 +155,7 @@ export default {
         const convOutput = convRes.output
         this.offset = 0;
         this.hasMoreMessages = true;
+        this.$emit("getConversation", convOutput.id)
         this.$emit("getMessages", []) 
         if(convOutput != null) {
           this.convInfo.id = convOutput.id;
