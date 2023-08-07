@@ -68,20 +68,7 @@
 export default {
   name: "HomePage",
   mounted() {
-    const logo = document.querySelector("#logo");
-    const svg = document.querySelector("#logo svg");
-    const logoHeader = document.querySelector(".logo").getBoundingClientRect();
-    const homeMain = document.querySelector(".home-main");
-    setTimeout(() => {
-      logo.style.top = logoHeader.top + "px"
-      logo.style.left = logoHeader.left + "px"
-      svg.style.width = "104"
-      svg.style.height = "34"
-      logo.style.transform = "translate(0, 0)"
-      setTimeout(() => {
-        homeMain.style.visibility = "visible"
-      }, 1000);
-    }, 3500);
+    
   }
 }
 </script>
@@ -103,7 +90,8 @@ export default {
   background-size: cover;
   background-repeat: no-repeat;
   z-index: 1;
-  visibility: hidden;
+  opacity: 0;
+  animation: show 0.3s linear forwards 3.8s;
 }
 .home-main::before {
   content: "";
@@ -234,7 +222,7 @@ header {
 }
 
 #logo svg g {
-  animation: fill 0.8s ease-out forwards 3s;
+  animation: fill 1.5s linear forwards 2.4s;
 }
 #logo path:nth-child(1) {
   stroke-dasharray: 421;
@@ -245,31 +233,31 @@ header {
 #logo path:nth-child(2) {
   stroke-dasharray: 207;
   stroke-dashoffset: 207;
-  animation: line-animation 2s ease forwards 0.3s;
+  animation: line-animation 2s ease forwards 0.2s;
 }
 
 #logo path:nth-child(3) {
   stroke-dasharray: 300;
   stroke-dashoffset: 300;
-  animation: line-animation 2s ease forwards 0.6s;
+  animation: line-animation 2s ease forwards 0.4s;
 }
 
 #logo path:nth-child(4) {
   stroke-dasharray: 365;
   stroke-dashoffset: 365;
-  animation: line-animation 2s ease forwards 0.9s;
+  animation: line-animation 2s ease forwards 0.6s;
 }
 
 #logo path:nth-child(5) {
   stroke-dasharray: 333;
   stroke-dashoffset: 333;
-  animation: line-animation 2s ease forwards 1.2s;
+  animation: line-animation 2s ease forwards 0.8s;
 }
 
 #logo path:nth-child(6) {
   stroke-dasharray: 251;
   stroke-dashoffset: 251;
-  animation: line-animation 2s ease forwards 1.5s;
+  animation: line-animation 2s ease forwards 1s;
 }
 
 @keyframes line-animation {
@@ -282,10 +270,9 @@ header {
     fill: white;
   }
 }
-@keyframes move {
+@keyframes show {
   to {
-    top: 20px;
-    left: 100px;
+    opacity: 1;
   }
 }
 </style>
