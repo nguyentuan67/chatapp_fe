@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper flex-center">
-    <div class="form-wrap mb-4">
+    <div class="form-wrap">
       <div class="form-header">
         <h2>Create an account!</h2>
         <p>Welcome back! Please enter your detail.</p>
@@ -64,7 +64,7 @@
         <!-- <div @click="openModel = true" class="select-avt mb-3">
           Select an avatar
         </div> -->
-        <v-btn :loading="loading" variant="tonal" class="submit-btn mb-4" @click="signup">
+        <v-btn :loading="loading" variant="tonal" class="submit-btn mb-2" @click="signup">
           Sign up
         </v-btn>
         <div class="text-center">
@@ -150,8 +150,8 @@ export default {
 .form-wrap {
   min-width: 450px;
   box-shadow: 2px 2px 10px #333;
-  padding: 40px 36px;
-  margin-bottom: 40px;
+  padding: 32px 36px;
+  margin-bottom: 30px;
   background-color: #fff;
   border-radius: 34px;
   position: relative;

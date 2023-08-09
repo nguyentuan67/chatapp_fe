@@ -4,7 +4,7 @@
       class="leftbar"
       permanent
       rail
-      rail-width="76"
+      rail-width="80"
     >
       <LeftBar/>
     </v-navigation-drawer>

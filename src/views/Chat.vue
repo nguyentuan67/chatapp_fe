@@ -1,5 +1,6 @@
 <template>
   <v-navigation-drawer
+    class="list-contact"
     permanent
     width="350"
   >
@@ -14,8 +15,8 @@
       @send-message="sendMessage"
       @getConversation="convId => currentConvId = convId"
     />
-    <div v-else>
-      Default chat page
+    <div v-else class="text-default flex-center">
+      Hãy chọn một đoạn chat hoặc bắt đầu cuộc trò chuyện mới
     </div>
   </v-main>
 </template>
@@ -147,5 +148,12 @@ export default {
 </script>
 
 <style scoped>
-
+.text-default {
+  height: 100%;
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--text-color);
+  margin: 0 12px;
+  text-align: center;
+}
 </style>
