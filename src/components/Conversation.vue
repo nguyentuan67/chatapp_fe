@@ -142,6 +142,7 @@ export default {
         const listUserId = [this.convUserId, this.userId]
         const res = await chatStore().createConversation(listUserId);
         this.convInfo.id = res.output.id
+        this.$emit("getConversation", this.convInfo.id)
       }
       this.$emit("sendMessage", this.message, this.convInfo.id, this.userId, this.convUser)
       this.message = "";
@@ -155,13 +156,12 @@ export default {
         const convOutput = convRes.output
         this.offset = 0;
         this.hasMoreMessages = true;
-        this.$emit("getConversation", convOutput.id)
         this.$emit("getMessages", []) 
         if(convOutput != null) {
+          this.$emit("getConversation", convOutput.id)
           this.convInfo.id = convOutput.id;
           this.convInfo.type = convOutput.type
           this.getMessages();
-          this.$refs.conversation.scrollTop = 0
         }
       }
     },
@@ -310,6 +310,7 @@ export default {
   height: auto;
   margin: 0 5px 5px;
   display: block;
+  border-radius: 50%;
 }
 
 .message-content {

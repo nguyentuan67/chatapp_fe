@@ -40,16 +40,20 @@ export const authStore = defineStore({
       }
       return res.data;
     },
-    async signup(username, firstName, lastName, password, gender) {
-      const reqBody = {
-        username,
-        password,
-        firstName,
-        lastName,
-        gender: gender ? true : false
-      }
-      console.log(reqBody);
-      const res = await ApiService.post("/auth/signup", reqBody);
+    async signup(username, firstName, lastName, password, gender, fileAvatar) {
+      const formData = new FormData();
+      formData.append("username", username);
+      formData.append("firstName", firstName);
+      formData.append("lastName", lastName);
+      formData.append("password", password);
+      formData.append("gender", gender ? true : false);
+      formData.append("avatar", fileAvatar)
+      const res = await ApiService.post("/auth/signup", formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      console.log(res);
       return res.data;
     },
     logout() {
