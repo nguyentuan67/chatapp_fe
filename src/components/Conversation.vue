@@ -154,7 +154,6 @@ export default {
       const res = await authStore().getUserById(this.convUserId);
       if (res.output != null) {
         this.convUser = {...res.output};
-        console.log(this.convUser);
         this.$emit("getConvUser", res.output)
         const convRes = await chatStore().getConversation(res.output.id);
         const convOutput = convRes.output
@@ -162,7 +161,6 @@ export default {
         this.hasMoreMessages = true;
         this.$emit("getMessages", []) 
         if(convOutput != null) {
-          console.log(convOutput);
           this.$emit("getConversation", convOutput.id)
           this.convInfo.id = convOutput.id;
           this.convInfo.type = convOutput.type

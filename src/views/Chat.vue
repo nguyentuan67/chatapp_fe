@@ -112,7 +112,6 @@ export default {
     async getConversations() {
       const res = await chatStore().getConversations();
       this.listConversation = res.output
-      console.log(this.listConversation);
     },
     updateConversations(message, convMsg) {
       const index = this.listConversation.findIndex(conversation => conversation.id == message.convId)
@@ -133,8 +132,12 @@ export default {
         this.listConversation.unshift(newConv)
       } else {
         this.listConversation[index].lastMessage = {...message}
-        if (index != 0) {
-          this.listConversation.sort((a, b) => b.lastMessage.time.localeCompare(a.lastMessage.time))
+        if (index > 0) {
+          const temp = this.listConversation[index];
+          for(let i=index; i>0; i--) {
+            this.listConversation[i] = this.listConversation[i-1];
+          }
+          this.listConversation[0] = temp;
         }
       }
     },
