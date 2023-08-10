@@ -42,9 +42,7 @@ export default {
   methods: {
   },
   created() {
-    console.log(this.contact);
     this.contact.type == 1 ? this.userContact = this.contact.users.find(user => user?.id != this.userId) : null
-    console.log(this.userContact);
   }
 }
 </script>
