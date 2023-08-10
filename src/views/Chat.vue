@@ -10,10 +10,12 @@
     <Conversation 
       v-if="isChatDetail" 
       :list-message="listMessage"
+      :conv-id-prop="currentConvId"
       @get-messages="getMessage"
       @update-message="updateMessage"
       @send-message="sendMessage"
       @getConversation="convId => currentConvId = convId"
+      @getConvUser="convUser => currentConvUser = convUser"
     />
     <div v-else class="text-default flex-center">
       Hãy chọn một đoạn chat hoặc bắt đầu cuộc trò chuyện mới
@@ -71,14 +73,13 @@ export default {
       })
       this.isConnected = true;
     },
-    sendMessage(message, conversationId, userId, convUser) {
+    sendMessage(message, conversationId, userId) {
       const chatMessage = { 
         'conversationId': conversationId,
         'userId': userId,
         'content': message,
       };
-      this.stompClient.send(`/app/chat/user/${convUser.id}`, {}, JSON.stringify(chatMessage));
-      this.currentConvUser = convUser;
+      this.stompClient.send(`/app/chat/user/${this.currentConvUser.id}`, {}, JSON.stringify(chatMessage));
     },
     disconnect () {
       if (this.stompClient != null) {
@@ -90,7 +91,8 @@ export default {
     },
     handleMessage(msg) {
       const chatMessage = JSON.parse(msg);
-      if (chatMessage.convId == this.currentConvId) {
+      console.log(chatMessage);
+      if (chatMessage.convId == this.currentConvId || chatMessage.user.id == this.currentConvUser.id) {
         this.listMessage.unshift(chatMessage)
       }
       this.updateConversations(chatMessage)
@@ -113,8 +115,10 @@ export default {
       console.log(this.listConversation);
     },
     updateConversations(message, convMsg) {
-        const index = this.listConversation.findIndex(conversation => conversation.id == message.convId)
+      const index = this.listConversation.findIndex(conversation => conversation.id == message.convId)
+      //create new conversation
       if(index == -1) {
+        this.currentConvId = message.convId;
         const newConv = {
           id: message.convId,
           name: null,
