@@ -30,7 +30,8 @@
   --text-color-active: rgb(19, 19, 19);
   --background-component: rgb(220, 220, 220);
   --sub-background-component: rgb(230, 230, 230);
-  --border-color: rgba(0, 0, 0, 0.12)
+  --border-color: rgba(0, 0, 0, 0.12);
+  --mask-avatar: rgba(255, 255, 255, 0.8)
 }
 
 [data-theme='dark'] {

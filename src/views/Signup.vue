@@ -1,85 +1,104 @@
 <template>
   <div class="wrapper flex-center">
     <div class="form-wrap">
-      <div class="form-header">
-        <h2>Create an account!</h2>
-        <p>Welcome back! Please enter your detail.</p>
-      </div>
-      <div class="form-body">
-        <v-form ref="form">
-          <v-text-field
-            class="mb-2"
-            label="Username"
-            v-model="username"
-            required
-            :rules="usernameValid"
-            variant="outlined"
-            :error-messages="errMsg"
-            prepend-inner-icon="far fa-user"
-          ></v-text-field>
-          <div class="d-flex">
+      <div class="form-signup">
+        <div class="form-header">
+          <h2>Create an account!</h2>
+          <p>Welcome back! Please enter your detail.</p>
+        </div>
+        <div class="form-body">
+          <v-form ref="form">
             <v-text-field
-              class="mb-2 me-2"
-              label="First Name"
-              v-model="firstName"
+              class="mb-2"
+              label="Username"
+              v-model="username"
               required
               :rules="usernameValid"
               variant="outlined"
+              :error-messages="errMsg"
+              prepend-inner-icon="far fa-user"
             ></v-text-field>
+            <div class="d-flex">
+              <v-text-field
+                class="mb-2 me-2"
+                label="First Name"
+                v-model="firstName"
+                required
+                :rules="usernameValid"
+                variant="outlined"
+              ></v-text-field>
+              <v-text-field
+                class="mb-2 ms-2"
+                label="Last Name"
+                v-model="lastName"
+                required
+                :rules="usernameValid"
+                variant="outlined"
+              ></v-text-field>
+            </div>
             <v-text-field
-              class="mb-2 ms-2"
-              label="Last Name"
-              v-model="lastName"
-              required
-              :rules="usernameValid"
+              class="mb-2"
+              label="Password"
+              type="password"
               variant="outlined"
-            ></v-text-field>
+              v-model="password"
+              required
+              :rules="passwordValid"
+              prepend-inner-icon="far fa-lock"
+            >
+            </v-text-field>
+            <v-radio-group
+              v-model="gender"
+              inline
+            >
+              <v-radio
+                class="me-3"
+                label="Male"
+                value= 1
+              ></v-radio>
+              <v-radio
+                label="Female"
+                value= 0
+              ></v-radio>
+            </v-radio-group>
+          </v-form>
+          <v-btn :loading="loading" variant="tonal" class="submit-btn mb-2" @click="validateForm">
+            Sign up
+          </v-btn>
+          <div class="text-center">
+            Have an account? 
+            <router-link :to="{name: 'Login'}">Login</router-link>
           </div>
-          <v-text-field
-            class="mb-2"
-            label="Password"
-            type="password"
-            variant="outlined"
-            v-model="password"
-            required
-            :rules="passwordValid"
-            prepend-inner-icon="far fa-lock"
-          >
-          </v-text-field>
-          <v-radio-group
-            v-model="gender"
-            inline
-          >
-            <v-radio
-              class="me-3"
-              label="Male"
-              value= 1
-            ></v-radio>
-            <v-radio
-              label="Female"
-              value= 0
-            ></v-radio>
-          </v-radio-group>
-        </v-form>
-        <!-- <div @click="openModel = true" class="select-avt mb-3">
-          Select an avatar
-        </div> -->
-        <v-btn :loading="loading" variant="tonal" class="submit-btn mb-2" @click="signup">
-          Sign up
-        </v-btn>
-        <div class="text-center">
-          Have an account? 
-          <router-link :to="{name: 'Login'}">Login</router-link>
         </div>
       </div>
-      <div class="model" :class="{open: openModel}">
-        <div class="list-avatar">
-          <div class="avatar-item" v-for="(avatar, i) in listAvatar" :key="i">
-            
+      <div class="form-avatar" :class="{open: openModel}">
+        <div class="form-header">
+          <h2>Setup your avatar</h2>
+          <p>Welcome back! Please enter your detail.</p>
+        </div>
+        <div>
+          <div class="avatar-wrap">
+            <div class="mask-avatar" :style="{backgroundImage: bgImage}"></div>
+            <div class="avatar" :style="{backgroundImage: bgImage}"></div>
+          </div>
+          <input @change="uploadFile" type="file" name="avatar" id="avatar" hidden accept="image/png, image/gif, image/jpeg">
+          <label class="label-avatar" for="avatar">Upload image</label>
+          <div class="row">
+            <div class="col-6">
+              <v-btn variant="tonal" class="submit-btn sub-btn mb-2" @click="signup">
+                Skip
+              </v-btn>
+            </div>
+            <div class="col-6">
+              <v-btn :disabled="!imageFile" :loading="loading" variant="tonal" class="submit-btn mb-2" @click="signup">
+                Save
+              </v-btn>
+            </div>
           </div>
         </div>
       </div>
     </div>
+
   </div>
 </template>
 
@@ -105,32 +124,41 @@ export default {
       passwordValid: [
         (v) => !!v || "Password không được để trống",
       ],
-      listAvatar: [],
-      baseUrl: "https://api.multiavatar.com/",
+      imageFile: null,
+      imageUrl: 'default-avatar.jpg',
       loading: false,
       errMsg: ""
     }
   },
+  computed: {
+    bgImage() {
+      return `url(${this.imageUrl})`
+    }
+  },
   methods: {
     async signup() {
-      const formValid = await this.$refs.form.validate();
-      if (formValid.valid) {
-        this.loading = true
-        const res = await authStore().signup(this.username, this.firstName, this.lastName, this.password, this.gender);
-        this.loading = false  
-        if(res.statusCode == statusCode.BAD_REQUEST) {
-          this.errMsg = res.error
-        } else if (res.statusCode == statusCode.SUCCESS) {
-          router.push("/login") 
-        }
+      this.loading = true
+      const res = await authStore().signup(this.username, this.firstName, this.lastName, this.password, this.gender, this.imageFile);
+      this.loading = false  
+      if(res.statusCode == statusCode.BAD_REQUEST) {
+        this.errMsg = res.error
+      } else if (res.statusCode == statusCode.SUCCESS) {
+        this.$router.push("/login")
       }
     },
-    async getRandomAvatars() {
-      for(let i = 1; i < 13; i++) {
-        let avatar = await this.baseUrl + Math.floor(Math.random() * 10000) + ".png"
-        this.listAvatar.push(avatar)
+    async validateForm() {
+      const formValid = await this.$refs.form.validate();
+      if (formValid.valid) {
+        this.openModel = true
       }
-      console.log(this.listAvatar);
+    },
+    uploadFile(e) {
+      if (e.target.files.length) {
+        const src = URL.createObjectURL(e.target.files[0]);
+        this.imageFile = e.target.files[0];
+        this.imageUrl = src;
+        console.log(this.imageUrl);
+      }
     }
   },
   created() {
@@ -148,14 +176,22 @@ export default {
 }
 
 .form-wrap {
-  min-width: 450px;
+  width: 450px;
   box-shadow: 2px 2px 10px #333;
-  padding: 32px 36px;
-  margin-bottom: 30px;
   background-color: #fff;
   border-radius: 34px;
   position: relative;
   overflow: hidden;
+  display: flex;
+  margin-bottom: 30px;
+}
+.form-wrap > div {
+  padding: 32px 36px;
+  min-width: 450px;
+  transition: all 0.6s linear;
+}
+.form-avatar.open, .form-signup:has(+ .form-avatar.open) {
+  transform: translateX(-450px);
 }
 .model {
   position: absolute;
@@ -192,15 +228,57 @@ export default {
 .submit-btn {
   width: 100%;
   background-color: var(--primary-color);
-  height: 50px !important;
+  height: 50px;
   color: #fff;
-  height: 44px;
   font-weight: 500;
   text-transform: capitalize;
   font-size: 18px;
 }
-.list-avatar {
-  display: flex;
-  flex-wrap: wrap;
+.submit-btn.sub-btn {
+  background-color: var(--sub-text-color);
+}
+.avatar-wrap {
+  width: 270px;
+  height: 270px;
+  margin: auto;
+  position: relative;
+}
+.avatar-wrap > div {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-clip: border-box;
+}
+.avatar-wrap .mask-avatar {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+.avatar-wrap .mask-avatar::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: var(--mask-avatar);
+  content: "";
+}
+.avatar-wrap .avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  transform: translateY(-100%);
+}
+.label-avatar {
+  width: 270px;
+  margin: 0 auto;
+  display: block;
+  margin-bottom: 34px;
+  padding: 6px 0;
+  background-color: var(--sub-text-color);
+  text-align: center;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  cursor: pointer;
 }
 </style>
