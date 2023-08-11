@@ -1,7 +1,7 @@
 <template>
   <router-link :to="{name: 'Home'}" class="d-block text-center">
     <v-avatar
-      image="https://api.multiavatar.com/Starcrasher.png"
+      image="/logo.jpg"
       color="grey-darken-1"
       :size="46"
       class="mx-auto mt-4"

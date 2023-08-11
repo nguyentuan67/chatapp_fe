@@ -113,9 +113,10 @@ import { chatStore } from "../stores/chatStore";
 import EmojiPicker from "./EmojiPicker/EmojiPicker.vue";
 export default {
   props: {
-    listMessage: { type: Array, require: true}
+    listMessage: { type: Array, require: true},
+    convIdProp: {type: Number, require: false},
   },
-  emits: ["getMessages", "sendMessage", "updateMessage", "getConversation"],
+  emits: ["getMessages", "sendMessage", "updateMessage", "getConversation", "getConvUser"],
   components: {
     EmojiPicker
   },
@@ -138,13 +139,14 @@ export default {
   },
   methods: {
     async sendMessage() {
-      if (this.convInfo.id == null) {
+      if (this.convInfo.id == null && this.convIdProp == null) {
         const listUserId = [this.convUserId, this.userId]
         const res = await chatStore().createConversation(listUserId);
         this.convInfo.id = res.output.id
         this.$emit("getConversation", this.convInfo.id)
       }
-      this.$emit("sendMessage", this.message, this.convInfo.id, this.userId, this.convUser)
+      let conversationId = this.convInfo.id || this.convIdProp;
+      this.$emit("sendMessage", this.message, conversationId, this.userId)
       this.message = "";
       this.$refs.messageInput.focus();
     },
@@ -152,6 +154,7 @@ export default {
       const res = await authStore().getUserById(this.convUserId);
       if (res.output != null) {
         this.convUser = {...res.output};
+        this.$emit("getConvUser", res.output)
         const convRes = await chatStore().getConversation(res.output.id);
         const convOutput = convRes.output
         this.offset = 0;
