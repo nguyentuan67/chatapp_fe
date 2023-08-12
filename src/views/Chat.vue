@@ -59,7 +59,7 @@ export default {
   methods: {
     connect() {
       const userId = JSON.parse(localStorage.getItem('userInfo')).id
-      const socket = new SockJS('https://localhost:8443/ws')
+      const socket = new SockJS(import.meta.env.VITE_APP_WEBSOCKET)
       this.stompClient = Stomp.over(socket)
       const ctx = this
       this.stompClient.connect({}, (frame) => {
