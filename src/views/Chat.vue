@@ -59,12 +59,13 @@ export default {
   methods: {
     connect() {
       const userId = JSON.parse(localStorage.getItem('userInfo')).id
-      const socket = new SockJS('https://localhost:8443/ws')
+      const socket = new SockJS(import.meta.env.VITE_APP_WEBSOCKET)
       this.stompClient = Stomp.over(socket)
       const ctx = this
       this.stompClient.connect({}, (frame) => {
         console.log('Connected: ', frame)
         ctx.stompClient.subscribe(`/topic/user/${userId}`, function (output) {
+          //Xử lý nhận tin nhắn
           ctx.handleMessage(output.body)
         })
       }, (message) => {
@@ -92,6 +93,7 @@ export default {
     handleMessage(msg) {
       const chatMessage = JSON.parse(msg);
       console.log(chatMessage);
+      // Nếu msg cùng một conv thì add vào listMessage
       if (chatMessage.convId == this.currentConvId || chatMessage.user.id == this.currentConvUser.id) {
         this.listMessage.unshift(chatMessage)
       }
@@ -115,7 +117,7 @@ export default {
     },
     updateConversations(message, convMsg) {
       const index = this.listConversation.findIndex(conversation => conversation.id == message.convId)
-      //create new conversation
+      //Nếu chưa có conv thì tạo mới và cập nhật
       if(index == -1) {
         this.currentConvId = message.convId;
         const newConv = {
@@ -131,6 +133,7 @@ export default {
         }
         this.listConversation.unshift(newConv)
       } else {
+        //Sắp xếp lại listConversation khi nhận được tin nhắn
         this.listConversation[index].lastMessage = {...message}
         if (index > 0) {
           const temp = this.listConversation[index];

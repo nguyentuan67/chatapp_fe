@@ -139,12 +139,15 @@ export default {
   },
   methods: {
     async sendMessage() {
+      // Nếu chưa có convId thì tạo mới và gửi id sang Chat.vue
+      // convIdProp khi conv được tạo từ người gửi tránh tạo 2 conv một lúc
       if (this.convInfo.id == null && this.convIdProp == null) {
         const listUserId = [this.convUserId, this.userId]
         const res = await chatStore().createConversation(listUserId);
         this.convInfo.id = res.output.id
         this.$emit("getConversation", this.convInfo.id)
       }
+      // Gọi socket gửi tin nhắn cho Chat
       let conversationId = this.convInfo.id || this.convIdProp;
       this.$emit("sendMessage", this.message, conversationId, this.userId)
       this.message = "";
@@ -153,19 +156,26 @@ export default {
     async getInfoConversation() {
       const res = await authStore().getUserById(this.convUserId);
       if (res.output != null) {
+        //đồng bộ convUser với Chat
         this.convUser = {...res.output};
         this.$emit("getConvUser", res.output)
         const convRes = await chatStore().getConversation(res.output.id);
         const convOutput = convRes.output
+        // Xóa messages conv trước
         this.offset = 0;
         this.hasMoreMessages = true;
         this.$emit("getMessages", []) 
+        //Nếu có conv thì lưu, không thì null
         if(convOutput != null) {
-          this.$emit("getConversation", convOutput.id)
           this.convInfo.id = convOutput.id;
           this.convInfo.type = convOutput.type
           this.getMessages();
+        } else {
+          this.convInfo.id = null;
+          this.convInfo.type = 1
         }
+        //đồng bộ conv với Chat
+        this.$emit("getConversation", convOutput?.id || null)
       }
     },
     async getMessages() {
