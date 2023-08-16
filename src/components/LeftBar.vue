@@ -52,8 +52,6 @@ export default {
       topItems: [
         {title: "Chats", icon: "far fa-comment", path: {name: "ChatDefault"}},
         {title: "Friends", icon: "fal fa-user-friends", path: {name: "Home"}},
-        {title: "Friends", icon: "fal fa-user-friends", path: {name: "Home"}},
-        {title: "Friends", icon: "fal fa-user-friends", path: {name: "Home"}},
       ],
       botItems: [
         {title: "Setting", icon: "fal fa-cog", path: {name: "Home"}},
