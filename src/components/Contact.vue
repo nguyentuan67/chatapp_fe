@@ -19,10 +19,6 @@
             {{contact.lastMessage.user.fullName + ": " +  contact.lastMessage.content}}
           </div>
           <div class="msg" v-else>{{ "Bạn: "+ contact.lastMessage.content }}</div>
-          <!-- <div class="info">
-            <span class="count flex-center">5</span>
-            <i class="fas fa-thumbtack me-1" style="transform: rotate(40deg); margin-bottom: -4px;"></i>
-          </div> -->
         </div>
       </div>
     </router-link>
